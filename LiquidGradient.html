@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Liquid Gradient</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{overflow:hidden;background:#0a0e27;}
+canvas{display:block;width:100vw;height:100vh;}
+.credit{position:fixed;bottom:14px;right:16px;color:rgba(255,255,255,0.4);font-size:11px;font-family:sans-serif;pointer-events:none;letter-spacing:0.02em;}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="credit">this animation credit to Cameron Knight (codepen)</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+class TouchTexture {
+  constructor() {
+    this.size = 64; this.maxAge = 64;
+    this.radius = 0.25 * 64;
+    this.trail = []; this.last = null;
+    this.canvas = document.createElement('canvas');
+    this.canvas.width = this.canvas.height = 64;
+    this.ctx = this.canvas.getContext('2d');
+    this.ctx.fillStyle = 'black';
+    this.ctx.fillRect(0, 0, 64, 64);
+    this.texture = new THREE.Texture(this.canvas);
+  }
+  update() {
+    this.ctx.fillStyle = 'black';
+    this.ctx.fillRect(0, 0, 64, 64);
+    for (let i = this.trail.length - 1; i >= 0; i--) {
+      const p = this.trail[i];
+      let f = p.force * (1 / this.maxAge) * (1 - p.age / this.maxAge);
+      p.x += p.vx * f; p.y += p.vy * f; p.age++;
+      if (p.age > this.maxAge) { this.trail.splice(i, 1); continue; }
+      const px = p.x * 64, py = (1 - p.y) * 64;
+      let intensity = p.age < this.maxAge * 0.3
+        ? Math.sin((p.age / (this.maxAge * 0.3)) * (Math.PI / 2))
+        : -((1 - (p.age - this.maxAge * 0.3) / (this.maxAge * 0.7))) * ((1 - (p.age - this.maxAge * 0.3) / (this.maxAge * 0.7)) - 2);
+      intensity *= p.force;
+      const r = this.radius;
+      const clr = `${((p.vx + 1) / 2) * 255},${((p.vy + 1) / 2) * 255},${intensity * 255}`;
+      const off = 64 * 5;
+      this.ctx.shadowOffsetX = off; this.ctx.shadowOffsetY = off;
+      this.ctx.shadowBlur = r;
+      this.ctx.shadowColor = `rgba(${clr},${0.2 * intensity})`;
+      this.ctx.beginPath();
+      this.ctx.fillStyle = 'rgba(255,0,0,1)';
+      this.ctx.arc(px - off, py - off, r, 0, Math.PI * 2);
+      this.ctx.fill();
+    }
+    this.texture.needsUpdate = true;
+  }
+  addTouch(pt) {
+    let vx = 0, vy = 0, force = 0;
+    if (this.last) {
+      const dx = pt.x - this.last.x, dy = pt.y - this.last.y;
+      if (dx === 0 && dy === 0) return;
+      const d = Math.sqrt(dx * dx + dy * dy);
+      vx = dx / d; vy = dy / d;
+      force = Math.min((dx * dx + dy * dy) * 20000, 2.0);
+    }
+    this.last = { x: pt.x, y: pt.y };
+    this.trail.push({ x: pt.x, y: pt.y, age: 0, force, vx, vy });
+  }
+}
+
+const canvas = document.getElementById('c');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.z = 50;
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0a0e27);
+
+const touch = new TouchTexture();
+
+const uniforms = {
+  uTime:          { value: 0 },
+  uResolution:    { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+  uColor1:        { value: new THREE.Vector3(0.945, 0.353, 0.133) },
+  uColor2:        { value: new THREE.Vector3(0.039, 0.055, 0.153) },
+  uColor3:        { value: new THREE.Vector3(0.945, 0.353, 0.133) },
+  uColor4:        { value: new THREE.Vector3(0.039, 0.055, 0.153) },
+  uColor5:        { value: new THREE.Vector3(0.945, 0.353, 0.133) },
+  uColor6:        { value: new THREE.Vector3(0.039, 0.055, 0.153) },
+  uSpeed:         { value: 1.5 },
+  uIntensity:     { value: 1.8 },
+  uTouchTexture:  { value: touch.texture },
+  uGrainIntensity:{ value: 0.08 },
+  uDarkNavy:      { value: new THREE.Vector3(0.039, 0.055, 0.153) },
+  uGradientSize:  { value: 0.45 },
+  uGradientCount: { value: 12.0 },
+  uColor1Weight:  { value: 0.5 },
+  uColor2Weight:  { value: 1.8 }
+};
+
+function getViewSize() {
+  const fovRad = (camera.fov * Math.PI) / 180;
+  const h = Math.abs(camera.position.z * Math.tan(fovRad / 2) * 2);
+  return { width: h * camera.aspect, height: h };
+}
+
+const vs = `varying vec2 vUv;void main(){gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);vUv=uv;}`;
+
+const fs = `
+uniform float uTime;
+uniform vec2 uResolution;
+uniform vec3 uColor1,uColor2,uColor3,uColor4,uColor5,uColor6;
+uniform float uSpeed,uIntensity;
+uniform sampler2D uTouchTexture;
+uniform float uGrainIntensity;
+uniform vec3 uDarkNavy;
+uniform float uGradientSize,uGradientCount,uColor1Weight,uColor2Weight;
+varying vec2 vUv;
+
+float grain(vec2 uv,float t){
+  vec2 g=uv*uResolution*0.5;
+  return fract(sin(dot(g+t,vec2(12.9898,78.233)))*43758.5453)*2.0-1.0;
+}
+
+vec3 getGradient(vec2 uv,float t){
+  float gr=uGradientSize;
+  vec2 c1=vec2(0.5+sin(t*uSpeed*0.4)*0.4,  0.5+cos(t*uSpeed*0.5)*0.4);
+  vec2 c2=vec2(0.5+cos(t*uSpeed*0.6)*0.5,  0.5+sin(t*uSpeed*0.45)*0.5);
+  vec2 c3=vec2(0.5+sin(t*uSpeed*0.35)*0.45, 0.5+cos(t*uSpeed*0.55)*0.45);
+  vec2 c4=vec2(0.5+cos(t*uSpeed*0.5)*0.4,  0.5+sin(t*uSpeed*0.4)*0.4);
+  vec2 c5=vec2(0.5+sin(t*uSpeed*0.7)*0.35, 0.5+cos(t*uSpeed*0.6)*0.35);
+  vec2 c6=vec2(0.5+cos(t*uSpeed*0.45)*0.5, 0.5+sin(t*uSpeed*0.65)*0.5);
+  vec2 c7=vec2(0.5+sin(t*uSpeed*0.55)*0.38, 0.5+cos(t*uSpeed*0.48)*0.42);
+  vec2 c8=vec2(0.5+cos(t*uSpeed*0.65)*0.36, 0.5+sin(t*uSpeed*0.52)*0.44);
+  vec2 c9=vec2(0.5+sin(t*uSpeed*0.42)*0.41, 0.5+cos(t*uSpeed*0.58)*0.39);
+  vec2 c10=vec2(0.5+cos(t*uSpeed*0.48)*0.37,0.5+sin(t*uSpeed*0.62)*0.43);
+
+  float i1=1.0-smoothstep(0.0,gr,length(uv-c1));
+  float i2=1.0-smoothstep(0.0,gr,length(uv-c2));
+  float i3=1.0-smoothstep(0.0,gr,length(uv-c3));
+  float i4=1.0-smoothstep(0.0,gr,length(uv-c4));
+  float i5=1.0-smoothstep(0.0,gr,length(uv-c5));
+  float i6=1.0-smoothstep(0.0,gr,length(uv-c6));
+  float i7=1.0-smoothstep(0.0,gr,length(uv-c7));
+  float i8=1.0-smoothstep(0.0,gr,length(uv-c8));
+  float i9=1.0-smoothstep(0.0,gr,length(uv-c9));
+  float i10=1.0-smoothstep(0.0,gr,length(uv-c10));
+
+  vec2 r1=uv-0.5;
+  float a1=t*uSpeed*0.15;
+  r1=vec2(r1.x*cos(a1)-r1.y*sin(a1),r1.x*sin(a1)+r1.y*cos(a1))+0.5;
+  vec2 r2=uv-0.5;
+  float a2=-t*uSpeed*0.12;
+  r2=vec2(r2.x*cos(a2)-r2.y*sin(a2),r2.x*sin(a2)+r2.y*cos(a2))+0.5;
+  float ri1=1.0-smoothstep(0.0,0.8,length(r1-0.5));
+  float ri2=1.0-smoothstep(0.0,0.8,length(r2-0.5));
+
+  vec3 col=vec3(0.0);
+  col+=uColor1*i1*(0.55+0.45*sin(t*uSpeed))*uColor1Weight;
+  col+=uColor2*i2*(0.55+0.45*cos(t*uSpeed*1.2))*uColor2Weight;
+  col+=uColor3*i3*(0.55+0.45*sin(t*uSpeed*0.8))*uColor1Weight;
+  col+=uColor4*i4*(0.55+0.45*cos(t*uSpeed*1.3))*uColor2Weight;
+  col+=uColor5*i5*(0.55+0.45*sin(t*uSpeed*1.1))*uColor1Weight;
+  col+=uColor6*i6*(0.55+0.45*cos(t*uSpeed*0.9))*uColor2Weight;
+  if(uGradientCount>6.0){
+    col+=uColor1*i7*(0.55+0.45*sin(t*uSpeed*1.4))*uColor1Weight;
+    col+=uColor2*i8*(0.55+0.45*cos(t*uSpeed*1.5))*uColor2Weight;
+    col+=uColor3*i9*(0.55+0.45*sin(t*uSpeed*1.6))*uColor1Weight;
+    col+=uColor4*i10*(0.55+0.45*cos(t*uSpeed*1.7))*uColor2Weight;
+  }
+  col+=mix(uColor1,uColor3,ri1)*0.45*uColor1Weight;
+  col+=mix(uColor2,uColor4,ri2)*0.4*uColor2Weight;
+  col=clamp(col,0.0,1.0)*uIntensity;
+  float lum=dot(col,vec3(0.299,0.587,0.114));
+  col=mix(vec3(lum),col,1.35);
+  col=pow(col,vec3(0.92));
+  float b=length(col);
+  col=mix(uDarkNavy,col,max(b*1.2,0.15));
+  float mx=length(col);if(mx>1.0)col*=(1.0/mx);
+  return col;
+}
+
+void main(){
+  vec2 uv=vUv;
+  vec4 tt=texture2D(uTouchTexture,uv);
+  float vx=-(tt.r*2.0-1.0), vy=-(tt.g*2.0-1.0), ins=tt.b;
+  uv.x+=vx*0.8*ins; uv.y+=vy*0.8*ins;
+  float dist=length(uv-0.5);
+  uv+=vec2(sin(dist*20.0-uTime*3.0)*0.04*ins + sin(dist*15.0-uTime*2.0)*0.03*ins);
+  vec3 col=getGradient(uv,uTime);
+  col+=grain(uv,uTime)*uGrainIntensity;
+  float ts=uTime*0.5;
+  col.r+=sin(ts)*0.02; col.g+=cos(ts*1.4)*0.02; col.b+=sin(ts*1.2)*0.02;
+  float b2=length(col);
+  col=mix(uDarkNavy,col,max(b2*1.2,0.15));
+  col=clamp(col,0.0,1.0);
+  float mx=length(col);if(mx>1.0)col*=(1.0/mx);
+  gl_FragColor=vec4(col,1.0);
+}`;
+
+const vs2 = getViewSize();
+const geo = new THREE.PlaneGeometry(vs2.width, vs2.height, 1, 1);
+const mat = new THREE.ShaderMaterial({ uniforms, vertexShader: vs, fragmentShader: fs });
+const mesh = new THREE.Mesh(geo, mat);
+scene.add(mesh);
+
+const clock = new THREE.Clock();
+function tick() {
+  requestAnimationFrame(tick);
+  uniforms.uTime.value += Math.min(clock.getDelta(), 0.1);
+  touch.update();
+  renderer.render(scene, camera);
+}
+tick();
+
+window.addEventListener('mousemove', e => {
+  touch.addTouch({ x: e.clientX / window.innerWidth, y: 1 - e.clientY / window.innerHeight });
+});
+window.addEventListener('touchmove', e => {
+  e.preventDefault();
+  const t = e.touches[0];
+  touch.addTouch({ x: t.clientX / window.innerWidth, y: 1 - t.clientY / window.innerHeight });
+}, { passive: false });
+
+window.addEventListener('resize', () => {
+  const w = window.innerWidth, h = window.innerHeight;
+  renderer.setSize(w, h);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  uniforms.uResolution.value.set(w, h);
+  const vs3 = getViewSize();
+  mesh.geometry.dispose();
+  mesh.geometry = new THREE.PlaneGeometry(vs3.width, vs3.height, 1, 1);
+});
+</script>
+</body>
+</html>
