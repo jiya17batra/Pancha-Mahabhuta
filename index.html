@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pancha Mahabhuta</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- WebGL Background Canvas (injected by JS) -->
+
+<div class="cur" id="cur"></div>
+<div class="cur-r" id="curR"></div>
+<div class="prog" id="prog"></div>
+
+<div class="site-content">
+
+<nav class="nav">
+  <div class="nav-logo">Pancha Mahabhuta</div>
+  <div class="nav-dots">
+    <div class="ndot active" data-t="hero"></div>
+    <div class="ndot" data-t="prithvi"></div>
+    <div class="ndot" data-t="jal"></div>
+    <div class="ndot" data-t="agni"></div>
+    <div class="ndot" data-t="vayu"></div>
+    <div class="ndot" data-t="akash"></div>
+  </div>
+</nav>
+
+<div class="side-nav">
+  <div class="snav-item" data-t="prithvi"><span class="snav-label">Prithvi</span><div class="snav-dot"></div></div>
+  <div class="snav-item" data-t="jal">    <span class="snav-label">Jal</span>    <div class="snav-dot"></div></div>
+  <div class="snav-item" data-t="agni">   <span class="snav-label">Agni</span>   <div class="snav-dot"></div></div>
+  <div class="snav-item" data-t="vayu">   <span class="snav-label">Vayu</span>   <div class="snav-dot"></div></div>
+  <div class="snav-item" data-t="akash">  <span class="snav-label">Akash</span>  <div class="snav-dot"></div></div>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="mandala"></div>
+  <div class="hero-txt">
+    <p class="hero-sub">पञ्चमहाभूत &nbsp;·&nbsp; Five Great Elements</p>
+    <h1 class="hero-h1">Pancha<br><em>Mahabhuta</em></h1>
+    <p class="hero-p">The five primordial elements that constitute the universe — from the ancient wisdom of Vedic philosophy.</p>
+    <div class="scroll-hint"><span>Explore</span><div class="sline"></div></div>
+  </div>
+</section>
+
+<script>
+const IMGS = {
+  prithvi: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=640&q=85',
+  jal:     'https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=640&q=85',
+  agni:    'https://images.unsplash.com/photo-1486915309851-b0cc1f8a0084?w=640&q=85',
+  vayu:    'https://images.unsplash.com/photo-1534088568595-a066f410bcda?w=640&q=85',
+  akash:   'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=640&q=85'
+};
+const IMGS_SM = {
+  prithvi: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=120&q=70',
+  jal:     'https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=120&q=70',
+  agni:    'https://images.unsplash.com/photo-1486915309851-b0cc1f8a0084?w=120&q=70',
+  vayu:    'https://images.unsplash.com/photo-1534088568595-a066f410bcda?w=120&q=70',
+  akash:   'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=120&q=70'
+};
+const ORDER = ['prithvi','jal','agni','vayu','akash'];
+function miniStrip(active){
+  return `<div class="orb-strip">${ORDER.map(k=>`
+    <div class="mini-orb${k===active?' hi':''}" onclick="go('${k}')">
+      <img src="${IMGS_SM[k]}" alt="${k}">
+    </div>`).join('')}
+  </div>`;
+}
+</script>
+
+<!-- PRITHVI -->
+<section class="esec s-prithvi" id="prithvi">
+  <script>document.currentScript.insertAdjacentHTML('beforebegin',miniStrip('prithvi'))</script>
+  <div class="einner">
+    <div class="orb-wrap">
+      <div class="orb-ring-o"></div><div class="orb-ring-i"></div>
+      <div class="orb"><img src="https://images.unsplash.com/photo-1448375240586-882707db888b?w=640&q=85" alt="Prithvi"></div>
+    </div>
+    <div class="etext">
+      <div class="enum">01 / 05 &nbsp;·&nbsp; पृथ्वी</div>
+      <h2 class="ename">Prithvi</h2>
+      <div class="eeng">Earth &nbsp;·&nbsp; The Grounding Force</div>
+      <div class="ediv"></div>
+      <p class="edesc">Prithvi, the element of earth, is linked to Bhumi Devi, the nurturing mother. She represents stability, growth, and the foundation of all life.</p>
+      <p class="edeity">Associated with Bhumi Devi — the eternal earth goddess</p>
+      <div class="etags"><span class="tag">Stability</span><span class="tag">Growth</span><span class="tag">Foundation</span><span class="tag">Nurturing</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- JAL -->
+<section class="esec s-jal" id="jal">
+  <script>document.currentScript.insertAdjacentHTML('beforebegin',miniStrip('jal'))</script>
+  <div class="einner rev">
+    <div class="orb-wrap">
+      <div class="orb-ring-o"></div><div class="orb-ring-i"></div>
+      <div class="orb"><img src="https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=640&q=85" alt="Jal"></div>
+    </div>
+    <div class="etext">
+      <div class="enum">02 / 05 &nbsp;·&nbsp; जल</div>
+      <h2 class="ename">Jal</h2>
+      <div class="eeng">Water &nbsp;·&nbsp; The Flowing Essence</div>
+      <div class="ediv"></div>
+      <p class="edesc">Jal, the element of water, is associated with Lord Varuna, the ruler of oceans. He symbolizes purity, flow, and the very essence of life.</p>
+      <p class="edeity">Associated with Lord Varuna — ruler of celestial oceans</p>
+      <div class="etags"><span class="tag">Purity</span><span class="tag">Flow</span><span class="tag">Life</span><span class="tag">Adaptability</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- AGNI -->
+<section class="esec s-agni" id="agni">
+  <script>document.currentScript.insertAdjacentHTML('beforebegin',miniStrip('agni'))</script>
+  <div class="einner">
+    <div class="orb-wrap">
+      <div class="orb-ring-o"></div><div class="orb-ring-i"></div>
+      <div class="orb"><img src="https://images.unsplash.com/photo-1486915309851-b0cc1f8a0084?w=640&q=85" alt="Agni"></div>
+    </div>
+    <div class="etext">
+      <div class="enum">03 / 05 &nbsp;·&nbsp; अग्नि</div>
+      <h2 class="ename">Agni</h2>
+      <div class="eeng">Fire &nbsp;·&nbsp; The Transforming Power</div>
+      <div class="ediv"></div>
+      <p class="edesc">Agni, the element of fire, is named after Lord Agni, the divine messenger of the gods. He represents energy, transformation, and the sacred power of rituals.</p>
+      <p class="edeity">Associated with Lord Agni — divine messenger of the gods</p>
+      <div class="etags"><span class="tag">Energy</span><span class="tag">Transformation</span><span class="tag">Ritual</span><span class="tag">Light</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- VAYU -->
+<section class="esec s-vayu" id="vayu">
+  <script>document.currentScript.insertAdjacentHTML('beforebegin',miniStrip('vayu'))</script>
+  <div class="einner rev">
+    <div class="orb-wrap">
+      <div class="orb-ring-o"></div><div class="orb-ring-i"></div>
+      <div class="orb"><img src="https://images.unsplash.com/photo-1534088568595-a066f410bcda?w=640&q=85" alt="Vayu"></div>
+    </div>
+    <div class="etext">
+      <div class="enum">04 / 05 &nbsp;·&nbsp; वायु</div>
+      <h2 class="ename">Vayu</h2>
+      <div class="eeng">Air &nbsp;·&nbsp; The Life Breath</div>
+      <div class="ediv"></div>
+      <p class="edesc">Vayu, the element of air, is named after Lord Vayu, the god of wind. He signifies movement, breath, and the invisible force of life energy.</p>
+      <p class="edeity">Associated with Lord Vayu — god of winds and breath</p>
+      <div class="etags"><span class="tag">Movement</span><span class="tag">Breath</span><span class="tag">Freedom</span><span class="tag">Life Force</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- AKASH -->
+<section class="esec s-akash" id="akash">
+  <script>document.currentScript.insertAdjacentHTML('beforebegin',miniStrip('akash'))</script>
+  <div class="einner">
+    <div class="orb-wrap">
+      <div class="orb-ring-o"></div><div class="orb-ring-i"></div>
+      <div class="orb"><img src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=640&q=85" alt="Akash"></div>
+    </div>
+    <div class="etext">
+      <div class="enum">05 / 05 &nbsp;·&nbsp; आकाश</div>
+      <h2 class="ename">Akash</h2>
+      <div class="eeng">Space &nbsp;·&nbsp; The Infinite Void</div>
+      <div class="ediv"></div>
+      <p class="edesc">Akash, the element of space, is associated with Lord Shiva, the infinite presence. He represents vastness, connection, and the cosmic universe.</p>
+      <p class="edeity">Associated with Lord Shiva — the infinite cosmic presence</p>
+      <div class="etags"><span class="tag">Vastness</span><span class="tag">Connection</span><span class="tag">Cosmos</span><span class="tag">Infinity</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- GRID -->
+<section class="gsec">
+  <div class="gh"><h2>The Five <em>Elements</em></h2><p>All creation arises from, and returns to, these five primordial forces</p></div>
+  <div class="egrid">
+    <div class="gcard gc-prithvi" onclick="go('prithvi')">
+      <div class="gorb"><img src="https://images.unsplash.com/photo-1448375240586-882707db888b?w=160&q=70" alt="Earth"></div>
+      <div class="gcname">Prithvi</div><div class="gcelem">Earth</div><div class="gcdesc">Stability &amp; Foundation</div>
+    </div>
+    <div class="gcard gc-jal" onclick="go('jal')">
+      <div class="gorb"><img src="https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=160&q=70" alt="Water"></div>
+      <div class="gcname">Jal</div><div class="gcelem">Water</div><div class="gcdesc">Purity &amp; Flow</div>
+    </div>
+    <div class="gcard gc-agni" onclick="go('agni')">
+      <div class="gorb"><img src="https://images.unsplash.com/photo-1486915309851-b0cc1f8a0084?w=160&q=70" alt="Fire"></div>
+      <div class="gcname">Agni</div><div class="gcelem">Fire</div><div class="gcdesc">Energy &amp; Transformation</div>
+    </div>
+    <div class="gcard gc-vayu" onclick="go('vayu')">
+      <div class="gorb"><img src="https://images.unsplash.com/photo-1534088568595-a066f410bcda?w=160&q=70" alt="Air"></div>
+      <div class="gcname">Vayu</div><div class="gcelem">Air</div><div class="gcdesc">Movement &amp; Breath</div>
+    </div>
+    <div class="gcard gc-akash" onclick="go('akash')">
+      <div class="gorb"><img src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=160&q=70" alt="Space"></div>
+      <div class="gcname">Akash</div><div class="gcelem">Space</div><div class="gcdesc">Vastness &amp; Cosmos</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="fi">
+    <div class="fb"><h3>Pancha <em>Mahabhuta</em></h3><p>Five elements of ancient Vedic wisdom</p></div>
+    <div class="fsoc">
+      <a class="sbtn" href="https://github.com/jiya17batra" aria-label="GitHub"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg></a>
+      <a class="sbtn" href="https://www.linkedin.com/in/jiya17batra" aria-label="LinkedIn"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+      <a class="sbtn" href="https://www.behance.net/jiya17batra" aria-label="Behance"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M6.938 4.503c.702 0 1.34.06 1.92.188.577.13 1.07.33 1.485.61.41.28.733.65.96 1.12.225.47.34 1.05.34 1.73 0 .74-.17 1.36-.507 1.86-.338.5-.837.9-1.502 1.22.906.26 1.576.72 2.022 1.37.448.66.665 1.45.665 2.36 0 .75-.13 1.39-.41 1.93-.28.55-.67 1-1.16 1.35-.48.348-1.05.6-1.69.76-.633.16-1.29.24-1.972.24H0V4.51h6.938v-.007zM16.94 6.007h6.058v1.594H16.94V6.007zm-10.015 3.44c.647 0 1.15-.143 1.516-.43.364-.287.55-.7.55-1.244 0-.3-.05-.552-.153-.752-.103-.2-.238-.36-.42-.485-.176-.126-.38-.21-.607-.254-.23-.045-.467-.066-.712-.066H3.24v3.23h3.685zm.388 4.76c.27 0 .528-.026.765-.078.24-.052.45-.13.632-.24.18-.11.327-.268.43-.47.1-.2.15-.452.15-.758 0-.594-.172-1.012-.52-1.254-.347-.24-.804-.36-1.37-.36H3.24v3.16h4.073zm9.12.714c.4.39.98.587 1.72.587.536 0 1-.13 1.39-.392.39-.26.63-.537.717-.83h2.45c-.39 1.213-1 2.076-1.82 2.59-.826.515-1.826.77-2.996.77-.816 0-1.55-.13-2.2-.39-.655-.26-1.21-.63-1.67-1.1-.46-.47-.815-1.03-1.065-1.68-.25-.65-.375-1.36-.375-2.14 0-.755.13-1.455.39-2.1.26-.647.625-1.2 1.09-1.67.468-.464 1.02-.826 1.67-1.08.65-.25 1.366-.38 2.146-.38.875 0 1.642.168 2.303.503.66.336 1.208.79 1.64 1.36.433.57.745 1.23.935 1.97.19.74.26 1.52.205 2.33H16.44c0 .84.21 1.46.613 1.85zm3.018-4.93c-.326-.36-.83-.538-1.51-.538-.44 0-.808.075-1.1.225-.3.15-.54.33-.726.55-.18.22-.307.455-.376.703-.07.25-.11.484-.12.706h4.414c-.1-.72-.257-1.285-.582-1.645z"/></svg></a>
+    </div>
+  </div>
+  <div class="fb2">
+    <p>Designed & developed by me • Inspired by Pancha Mahabhuta</p>
+    <p>Where ancient elements meet modern experience.</p>
+  </div>
+</footer>
+
+</div><!-- end .site-content -->
+
+<!-- THREE.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<script src="script.js"></script>
+</body>
+</html>
