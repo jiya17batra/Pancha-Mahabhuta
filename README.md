@@ -26,16 +26,28 @@ This project transforms these timeless concepts into a modern, interactive web e
 
 ---
 
-## ✨ Concept & Vision
+## ✨ Concept & Vision & Inspiration
 
-The goal of this project was to:
+I heard these words from an Aghori at Manikarnika Ghat, Varanasi — a place where life and death exist side by side.
 
-- Translate ancient philosophy into digital storytelling  
-- Create an immersive scroll-based journey  
-- Combine minimal UI with symbolic visuals  
-- Maintain cultural depth while using modern web aesthetics  
+“भस्मीभूतं शरीरं मे
+पृथ्वी आपः तेजो वायुराकाशम्।
+पञ्चतत्त्वे विलीयन्ते
+न मम, न मम॥”
 
-It is a fusion of **heritage + design + technology**.
+Meaning:
+My body turns to ashes.
+It dissolves into Earth, Water, Fire, Air, and Space.
+It merges back into the five elements —
+Nothing is mine, nothing is mine.
+
+Standing at the ghats, watching the fire, the smoke, the river — I understood something deeply:
+We are not separate from nature. We are made of it. We return to it.
+
+This realization inspired me to create Pancha Mahabhuta — a digital exploration of the five elements that form existence itself.
+
+This project is not just a website.
+It is a reflection on impermanence, identity, and the illusion of ownership.
 
 ---
 
